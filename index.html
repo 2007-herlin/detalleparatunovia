@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universo de Amor - Experiencia Interactiva</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Cinzel:wght@300;400&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --rosa-cosmico: #ff6b9d;
+            --rosa-suave: #ff97c1;
+            --violeta-estelar: #b399ff;
+            --cian-nebulosa: #4cc9f0;
+            --dorado-lunar: #ffd166;
+            --verde-aurora: #7ae582;
+            --azul-profundo: #0a0e23;
+            --blanco-estelar: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Playfair Display', serif;
+            background: #000;
+            color: var(--blanco-estelar);
+            overflow: hidden;
+            height: 100vh;
+            cursor: none;
+        }
+
+        /* Cursor galáctico personalizado */
+        .cursor-galaxia {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border: 2px solid var(--rosa-cosmico);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: screen;
+            transition: transform 0.1s ease;
+            box-shadow: 0 0 20px var(--rosa-cosmico);
+        }
+
+        .cursor-trail {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: var(--violeta-estelar);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.5;
+        }
+
+        /* Contenedor principal 3D */
+        .universo-3d {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            perspective: 2000px;
+            transition: transform 0.2s ease-out;
+        }
+
+        /* Sistema solar de amor */
+        .sistema-solar {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-style: preserve-3d;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Sol/Corazón central */
+        .corazon-solar {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            transform: translate(-50%, -50%);
+            animation: latido-solar 4s infinite ease-in-out;
+            filter: drop-shadow(0 0 40px var(--rosa-cosmico));
+            z-index: 10;
+        }
+
+        .corazon-solar .particula {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--rosa-cosmico);
+            border-radius: 50%;
+            animation: orbitar-particula 3s infinite linear;
+        }
+
+        /* Planetas con mensajes */
+        .planeta-amor {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px currentColor;
+            box-shadow: 0 0 30px currentColor;
+        }
+
+        .planeta-amor:hover {
+            transform: scale(1.8) !important;
+            z-index: 100 !important;
+        }
+
+        /* Órbitas */
+        .orbita {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform-style: preserve-3d;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+
+        /* Navegación secreta */
+        .navegacion-secreta {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .boton-secreto {
+            width: 50px;
+            height: 50px;
+            background: rgba(26, 26, 64, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid var(--rosa-cosmico);
+            color: var(--rosa-cosmico);
+            font-size: 1.2rem;
+        }
+
+        .boton-secreto:hover {
+            transform: scale(1.2) rotate(15deg);
+            background: var(--rosa-cosmico);
+            color: white;
+            box-shadow: 0 0 30px var(--rosa-cosmico);
+        }
+
+        /* Ventana de mensajes */
+        .ventana-mensaje {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10, 14, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 40px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 10000;
+            border: 2px solid var(--rosa-cosmico);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        .ventana-mensaje.visible {
+            display: block;
+            animation: aparecer-ventana 0.5s ease-out;
+        }
+
+        .cerrar-ventana {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: var(--rosa-cosmico);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        /* Modos especiales */
+        .modo-constelacion {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .estrella-constelacion {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: brillar 3s infinite;
+        }
+
+        /* Efecto de supernova */
+        .supernova {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--rosa-cosmico) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        /* Contador de amor cósmico */
+        .contador-cosmico {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: rgba(26, 26, 64, 0.8);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--rosa-cosmico);
+            z-index: 1000;
+            min-width: 200px;
+        }
+
+        .numero-cosmico {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            color: var(--dorado-lunar);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        /* Animaciones */
+        @keyframes latido-solar {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        @keyframes orbitar-particula {
+            0% { transform: rotate(0deg) translateX(60px) rotate(0deg); }
+            100% { transform: rotate(360deg) translateX(60px) rotate(-360deg); }
+        }
+
+        @keyframes aparecer-ventana {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        @keyframes brillar {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Efecto de escritura cósmica */
+        .texto-cosmico {
+            position: absolute;
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            color: var(--blanco-estelar);
+            text-shadow: 0 0 10px currentColor;
+            opacity: 0;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .planeta-amor {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            
+            .corazon-solar {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .navegacion-secreta {
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .boton-secreto {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .contador-cosmico {
+                top: 20px;
+                left: 20px;
+                padding: 15px;
+                min-width: 150px;
+            }
+        }
+
+        /* Efecto de lluvia de estrellas */
+        .lluvia-estrellas {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        .estrella-fugaz {
+            position: absolute;
+            width: 2px;
+            height: 30px;
+            background: linear-gradient(to bottom, transparent, white);
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Cursor galáctico -->
+    <div class="cursor-galaxia" id="cursor"></div>
+    
+    <!-- Universo 3D -->
+    <div class="universo-3d" id="universo3d">
+        <!-- Sistema solar interactivo -->
+        <div class="sistema-solar" id="sistemaSolar">
+            <!-- Corazón solar -->
+            <div class="corazon-solar" id="corazonSolar"></div>
+            
+            <!-- Planetas de amor -->
+            <div class="planeta-amor" id="planetaAmor1" data-mensaje="Eres mi sol">
+                💖
+            </div>
+            <div class="planeta-amor" id="planetaAmor2" data-mensaje="Mi universo entero">
+                🌟
+            </div>
+            <div class="planeta-amor" id="planetaAmor3" data-mensaje="Eternamente tuyo">
+                💫
+            </div>
+            <div class="planeta-amor" id="planetaAmor4" data-mensaje="Mi razón de ser">
+                🪐
+            </div>
+            <div class="planeta-amor" id="planetaAmor5" data-mensaje="Te amo infinito">
+                ♾️
+            </div>
+            
+            <!-- Órbitas -->
+            <div class="orbita orbita-1" id="orbita1"></div>
+            <div class="orbita orbita-2" id="orbita2"></div>
+            <div class="orbita orbita-3" id="orbita3"></div>
+            <div class="orbita orbita-4" id="orbita4"></div>
+        </div>
+    </div>
+    
+    <!-- Modo constelación -->
+    <div class="modo-constelacion" id="modoConstelacion"></div>
+    
+    <!-- Lluvia de estrellas -->
+    <div class="lluvia-estrellas" id="lluviaEstrellas"></div>
+    
+    <!-- Contador cósmico -->
+    <div class="contador-cosmico" id="contadorCosmico">
+        <div class="numero-cosmico" id="contadorAmor">0</div>
+        <div style="text-align: center; color: var(--rosa-suave); font-size: 0.9rem;">
+            Latidos compartidos
+        </div>
+    </div>
+    
+    <!-- Navegación secreta -->
+    <div class="navegacion-secreta">
+        <div class="boton-secreto" id="btnModoNoche">
+            <i class="fas fa-moon"></i>
+        </div>
+        <div class="boton-secreto" id="btnSupernova">
+            <i class="fas fa-fire"></i>
+        </div>
+        <div class="boton-secreto" id="btnConstelacion">
+            <i class="fas fa-star"></i>
+        </div>
+        <div class="boton-secreto" id="btnMensajeSecreto">
+            <i class="fas fa-envelope"></i>
+        </div>
+    </div>
+    
+    <!-- Ventana de mensajes -->
+    <div class="ventana-mensaje" id="ventanaMensaje">
+        <div class="cerrar-ventana" id="cerrarVentana">
+            <i class="fas fa-times"></i>
+        </div>
+        <h2 style="color: var(--rosa-cosmico); font-family: 'Dancing Script', cursive; font-size: 2.5rem; margin-bottom: 20px; text-align: center;">
+            <span id="tituloMensaje">Mensaje Secreto</span>
+        </h2>
+        <div id="contenidoMensaje" style="color: var(--blanco-estelar); font-size: 1.2rem; line-height: 1.8;">
+            Cargando mensaje de amor...
+        </div>
+        <div style="text-align: center; margin-top: 30px;">
+            <button id="btnSiguienteMensaje" style="
+                background: linear-gradient(135deg, var(--rosa-cosmico), var(--violeta-estelar));
+                color: white;
+                border: none;
+                padding: 12px 30px;
+                border-radius: 25px;
+                cursor: pointer;
+                font-family: 'Cinzel', serif;
+                letter-spacing: 1px;
+            ">
+                Siguiente Mensaje
+            </button>
+        </div>
+    </div>
+    
+    <!-- Supernova oculta -->
+    <div class="supernova" id="supernova"></div>
+
+    <script>
+        // ========== CONFIGURACIÓN INICIAL ==========
+        const config = {
+            velocidadRotacion: 0.003,
+            sensibilidadMouse: 0.002,
+            tiempoSupernova: 2000,
+            mensajesAmor: [
+                {
+                    titulo: "Mi Universo Eres Tú",
+                    contenido: "Desde que llegaste a mi vida, todo tiene un nuevo significado. Eres la estrella que guía mi camino en la oscuridad más profunda.",
+                    color: "#ff6b9d"
+                },
+                {
+                    titulo: "Latidos Infinitos",
+                    contenido: "Cada latido de mi corazón lleva tu nombre. En cada respiro, en cada pensamiento, estás presente.",
+                    color: "#b399ff"
+                },
+                {
+                    titulo: "Constelación de Amor",
+                    contenido: "Juntos hemos creado constelaciones únicas en el cielo de nuestras vidas. Cada recuerdo es una estrella que brilla eternamente.",
+                    color: "#4cc9f0"
+                },
+                {
+                    titulo: "Viaje Cósmico",
+                    contenido: "Contigo, cada día es una aventura interestelar. Exploramos galaxias de risas y nebulosas de amor.",
+                    color: "#ffd166"
+                },
+                {
+                    titulo: "Eternidad Prometida",
+                    contenido: "No importa cuántos universos existan, en todos ellos te elegiría a ti. Mi amor por ti es infinito como el cosmos.",
+                    color: "#7ae582"
+                }
+            ],
+            planetas: [
+                { id: "planetaAmor1", radio: 200, velocidad: 0.001, angulo: 0, tamaño: 60 },
+                { id: "planetaAmor2", radio: 300, velocidad: 0.0008, angulo: 45, tamaño: 50 },
+                { id: "planetaAmor3", radio: 400, velocidad: 0.0006, angulo: 90, tamaño: 55 },
+                { id: "planetaAmor4", radio: 500, velocidad: 0.0004, angulo: 135, tamaño: 65 },
+                { id: "planetaAmor5", radio: 600, velocidad: 0.0002, angulo: 180, tamaño: 70 }
+            ]
+        };
+
+        // ========== ESTADO GLOBAL ==========
+        let estado = {
+            rotacionX: 0,
+            rotacionY: 0,
+            mouseX: 0,
+            mouseY: 0,
+            contadorAmor: 0,
+            mensajeActual: 0,
+            modoNoche: false,
+            constelacionActiva: false,
+            supernovaActiva: false,
+            textosActivos: []
+        };
+
+        // ========== INICIALIZACIÓN ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            inicializarUniverso();
+            inicializarInteractividad();
+            crearEfectosEspeciales();
+            iniciarAnimaciones();
+            
+            // Efecto de entrada espectacular
+            crearEntradaEspectacular();
+        });
+
+        // ========== UNIVERSO 3D ==========
+        function inicializarUniverso() {
+            const universo = document.getElementById('universo3d');
+            const sistemaSolar = document.getElementById('sistemaSolar');
+            
+            // Crear partículas del corazón solar
+            const corazonSolar = document.getElementById('corazonSolar');
+            for (let i = 0; i < 50; i++) {
+                const particula = document.createElement('div');
+                particula.className = 'particula';
+                particula.style.setProperty('--i', i);
+                particula.style.animationDelay = (i * 0.1) + 's';
+                corazonSolar.appendChild(particula);
+            }
+            
+            // Crear órbitas
+            crearOrbitas();
+            
+            // Posicionar planetas inicialmente
+            actualizarPlanetas();
+            
+            // Crear constelación inicial
+            crearConstelacion(100);
+            
+            // Iniciar lluvia de estrellas
+            iniciarLluviaEstrellas();
+        }
+
+        function crearOrbitas() {
+            for (let i = 1; i <= 4; i++) {
+                const orbita = document.getElementById(`orbita${i}`);
+                const radio = 150 + (i * 100);
+                orbita.style.width = radio * 2 + 'px';
+                orbita.style.height = radio * 2 + 'px';
+                orbita.style.borderColor = `rgba(255, ${100 + i * 30}, ${157 + i * 20}, 0.3)`;
+                orbita.style.animation = `orbitar-${i} ${20 + i * 10}s linear infinite`;
+                
+                // Crear animación dinámica para cada órbita
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes orbitar-${i} {
+                        0% { transform: translate(-50%, -50%) rotateX(65deg) rotateZ(0deg); }
+                        100% { transform: translate(-50%, -50%) rotateX(65deg) rotateZ(360deg); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        function actualizarPlanetas() {
+            const tiempo = Date.now() * 0.001;
+            
+            config.planetas.forEach(planeta => {
+                const elemento = document.getElementById(planeta.id);
+                if (!elemento) return;
+                
+                // Actualizar ángulo
+                planeta.angulo += planeta.velocidad;
+                if (planeta.angulo > Math.PI * 2) planeta.angulo -= Math.PI * 2;
+                
+                // Calcular posición 3D
+                const x = Math.cos(planeta.angulo + tiempo * planeta.velocidad * 10) * planeta.radio;
+                const z = Math.sin(planeta.angulo + tiempo * planeta.velocidad * 10) * planeta.radio;
+                const y = Math.sin(tiempo * planeta.velocidad * 5) * 50;
+                
+                // Aplicar transformación 3D
+                elemento.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`;
+                
+                // Efecto de brillo basado en posición
+                const brillo = 0.5 + (Math.sin(tiempo * 2) + 1) * 0.25;
+                elemento.style.opacity = brillo;
+                elemento.style.boxShadow = `0 0 ${20 + brillo * 20}px currentColor`;
+                
+                // Rotación propia
+                elemento.style.rotate = `${planeta.angulo * 180 / Math.PI}deg`;
+            });
+        }
+
+        // ========== INTERACTIVIDAD ==========
+        function inicializarInteractividad() {
+            // Cursor personalizado
+            const cursor = document.getElementById('cursor');
+            let trailElements = [];
+            
+            document.addEventListener('mousemove', (e) => {
+                estado.mouseX = e.clientX;
+                estado.mouseY = e.clientY;
+                
+                // Actualizar cursor
+                cursor.style.left = (estado.mouseX - 15) + 'px';
+                cursor.style.top = (estado.mouseY - 15) + 'px';
+                
+                // Crear rastro
+                crearRastro(e.clientX, e.clientY);
+                
+                // Rotar universo según mouse
+                if (e.buttons === 1) { // Botón izquierdo presionado
+                    estado.rotacionY += (e.movementX || 0) * config.sensibilidadMouse;
+                    estado.rotacionX += (e.movementY || 0) * config.sensibilidadMouse;
+                    
+                    const universo = document.getElementById('universo3d');
+                    universo.style.transform = `
+                        rotateX(${estado.rotacionX}rad)
+                        rotateY(${estado.rotacionY}rad)
+                    `;
+                }
+            });
+            
+            function crearRastro(x, y) {
+                const trail = document.createElement('div');
+                trail.className = 'cursor-trail';
+                trail.style.left = (x - 4) + 'px';
+                trail.style.top = (y - 4) + 'px';
+                trail.style.background = `hsl(${(x / window.innerWidth) * 360}, 70%, 65%)`;
+                
+                document.body.appendChild(trail);
+                trailElements.push(trail);
+                
+                // Limitar número de elementos
+                if (trailElements.length > 10) {
+                    const old = trailElements.shift();
+                    if (old.parentNode) {
+                        old.style.opacity = '0';
+                        setTimeout(() => old.parentNode.removeChild(old), 300);
+                    }
+                }
+                
+                // Desvanecer
+                setTimeout(() => {
+                    trail.style.opacity = '0';
+                    setTimeout(() => {
+                        if (trail.parentNode) {
+                            trail.parentNode.removeChild(trail);
+                            trailElements = trailElements.filter(t => t !== trail);
+                        }
+                    }, 300);
+                }, 1000);
+            }
+            
+            // Planetas interactivos
+            config.planetas.forEach(planeta => {
+                const elemento = document.getElementById(planeta.id);
+                if (elemento) {
+                    elemento.addEventListener('click', () => {
+                        mostrarMensajePlaneta(planeta.id);
+                        crearExplosionCorazones(elemento);
+                        incrementarContador();
+                    });
+                    
+                    elemento.addEventListener('touchstart', (e) => {
+                        e.preventDefault();
+                        mostrarMensajePlaneta(planeta.id);
+                        crearExplosionCorazones(elemento);
+                        incrementarContador();
+                    });
+                }
+            });
+            
+            // Botones de navegación
+            document.getElementById('btnModoNoche').addEventListener('click', toggleModoNoche);
+            document.getElementById('btnSupernova').addEventListener('click', activarSupernova);
+            document.getElementById('btnConstelacion').addEventListener('click', toggleConstelacion);
+            document.getElementById('btnMensajeSecreto').addEventListener('click', mostrarMensajeSecreto);
+            document.getElementById('cerrarVentana').addEventListener('click', cerrarVentana);
+            document.getElementById('btnSiguienteMensaje').addEventListener('click', siguienteMensaje);
+            
+            // Doble clic para efecto especial
+            let ultimoClick = 0;
+            document.addEventListener('click', (e) => {
+                const ahora = Date.now();
+                if (ahora - ultimoClick < 300) {
+                    crearTextoCosmico(e.clientX, e.clientY, "💖 TE AMO 💖");
+                    crearExplosionEspecial(e.clientX, e.clientY);
+                }
+                ultimoClick = ahora;
+            });
+            
+            // Toque doble en móvil
+            let ultimoTouch = 0;
+            document.addEventListener('touchstart', (e) => {
+                const ahora = Date.now();
+                if (ahora - ultimoTouch < 300) {
+                    const touch = e.touches[0];
+                    crearTextoCosmico(touch.clientX, touch.clientY, "✨ ERES ESPECIAL ✨");
+                    crearExplosionEspecial(touch.clientX, touch.clientY);
+                }
+                ultimoTouch = ahora;
+            });
+            
+            // Sacudida para efecto especial
+            if (window.DeviceMotionEvent) {
+                let ultimaSacudida = 0;
+                window.addEventListener('devicemotion', (e) => {
+                    const aceleracion = e.accelerationIncludingGravity;
+                    const fuerza = Math.abs(aceleracion.x) + Math.abs(aceleracion.y) + Math.abs(aceleracion.z);
+                    
+                    if (fuerza > 30 && Date.now() - ultimaSacudida > 1000) {
+                        ultimaSacudida = Date.now();
+                        activarLluviaEspecial();
+                    }
+                });
+            }
+            
+            // Atajos de teclado
+            document.addEventListener('keydown', (e) => {
+                // Ctrl + L para mensaje de amor
+                if (e.ctrlKey && e.key === 'l') {
+                    mostrarMensajeSecreto();
+                    e.preventDefault();
+                }
+                
+                // Espacio para supernova
+                if (e.key === ' ') {
+                    activarSupernova();
+                    e.preventDefault();
+                }
+                
+                // Escape para cerrar ventana
+                if (e.key === 'Escape') {
+                    cerrarVentana();
+                }
+            });
+        }
+
+        // ========== EFECTOS ESPECIALES ==========
+        function crearEfectosEspeciales() {
+            // Efecto de partículas flotantes
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    crearParticulaFlotante();
+                }
+            }, 500);
+            
+            // Efecto de pulsación en el corazón solar
+            setInterval(() => {
+                const corazon = document.getElementById('corazonSolar');
+                corazon.style.filter = `drop-shadow(0 0 ${20 + Math.random() * 30}px var(--rosa-cosmico))`;
+            }, 2000);
+        }
+
+        function crearConstelacion(cantidad) {
+            const contenedor = document.getElementById('modoConstelacion');
+            
+            for (let i = 0; i < cantidad; i++) {
+                const estrella = document.createElement('div');
+                estrella.className = 'estrella-constelacion';
+                
+                // Posición aleatoria en 3D
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                const z = Math.random() * 1000 - 500;
+                
+                estrella.style.left = x + '%';
+                estrella.style.top = y + '%';
+                estrella.style.width = (Math.random() * 3 + 1) + 'px';
+                estrella.style.height = estrella.style.width;
+                estrella.style.opacity = Math.random() * 0.5 + 0.2;
+                estrella.style.animationDelay = Math.random() * 5 + 's';
+                estrella.style.animationDuration = (2 + Math.random() * 4) + 's';
+                estrella.style.transform = `translateZ(${z}px)`;
+                
+                contenedor.appendChild(estrella);
+            }
+        }
+
+        function iniciarLluviaEstrellas() {
+            const contenedor = document.getElementById('lluviaEstrellas');
+            
+            function crearEstrellaFugaz() {
+                const estrella = document.createElement('div');
+                estrella.className = 'estrella-fugaz';
+                
+                // Posición inicial aleatoria
+                estrella.style.left = Math.random() * 100 + '%';
+                estrella.style.top = '-30px';
+                
+                // Ángulo aleatorio
+                const angulo = Math.random() * 30 - 15;
+                estrella.style.transform = `rotate(${angulo}deg)`;
+                
+                // Longitud aleatoria
+                estrella.style.height = (30 + Math.random() * 50) + 'px';
+                
+                contenedor.appendChild(estrella);
+                
+                // Animación
+                const duracion = 1000 + Math.random() * 2000;
+                const distancia = 200 + Math.random() * window.innerHeight;
+                
+                estrella.animate([
+                    { 
+                        transform: `translateY(0) rotate(${angulo}deg)`,
+                        opacity: 0 
+                    },
+                    { 
+                        transform: `translateY(${distancia}px) rotate(${angulo}deg)`,
+                        opacity: 1 
+                    },
+                    { 
+                        transform: `translateY(${distancia + 100}px) rotate(${angulo}deg)`,
+                        opacity: 0 
+                    }
+                ], {
+                    duration: duracion,
+                    easing: 'linear'
+                });
+                
+                // Eliminar después
+                setTimeout(() => {
+                    if (estrella.parentNode) {
+                        estrella.parentNode.removeChild(estrella);
+                    }
+                }, duracion);
+            }
+            
+            // Crear estrellas fugaces periódicamente
+            setInterval(crearEstrellaFugaz, 500);
+            
+            // Ráfaga inicial
+            for (let i = 0; i < 20; i++) {
+                setTimeout(crearEstrellaFugaz, i * 100);
+            }
+        }
+
+        function crearParticulaFlotante() {
+            const particula = document.createElement('div');
+            particula.style.position = 'fixed';
+            particula.style.width = '2px';
+            particula.style.height = '2px';
+            particula.style.background = `hsl(${Math.random() * 360}, 70%, 65%)`;
+            particula.style.borderRadius = '50%';
+            particula.style.left = Math.random() * 100 + '%';
+            particula.style.top = Math.random() * 100 + '%';
+            particula.style.pointerEvents = 'none';
+            particula.style.zIndex = '9997';
+            particula.style.boxShadow = '0 0 10px currentColor';
+            
+            document.body.appendChild(particula);
+            
+            // Movimiento aleatorio
+            const angulo = Math.random() * Math.PI * 2;
+            const distancia = 50 + Math.random() * 100;
+            const duracion = 2000 + Math.random() * 2000;
+            
+            particula.animate([
+                {
+                    transform: 'translate(0, 0) scale(1)',
+                    opacity: 0
+                },
+                {
+                    transform: 'translate(0, 0) scale(1)',
+                    opacity: 0.8
+                },
+                {
+                    transform: `translate(${Math.cos(angulo) * distancia}px, ${Math.sin(angulo) * distancia}px) scale(0)`,
+                    opacity: 0
+                }
+            ], {
+                duration: duracion,
+                easing: 'ease-out'
+            });
+            
+            setTimeout(() => {
+                if (particula.parentNode) {
+                    particula.parentNode.removeChild(particula);
+                }
+            }, duracion);
+        }
+
+        // ========== ANIMACIONES PRINCIPALES ==========
+        function iniciarAnimaciones() {
+            function animar() {
+                actualizarPlanetas();
+                actualizarTextosCosmicos();
+                requestAnimationFrame(animar);
+            }
+            animar();
+        }
+
+        // ========== FUNCIONES INTERACTIVAS ==========
+        function mostrarMensajePlaneta(idPlaneta) {
+            const planeta = document.getElementById(idPlaneta);
+            const mensaje = planeta.dataset.mensaje || "Te amo";
+            
+            crearTextoCosmico(
+                planeta.getBoundingClientRect().left + 30,
+                planeta.getBoundingClientRect().top + 30,
+                mensaje
+            );
+        }
+
+        function crearTextoCosmico(x, y, texto) {
+            const textoElement = document.createElement('div');
+            textoElement.className = 'texto-cosmico';
+            textoElement.textContent = texto;
+            textoElement.style.left = x + 'px';
+            textoElement.style.top = y + 'px';
+            textoElement.style.color = `hsl(${Math.random() * 360}, 70%, 65%)`;
+            
+            document.body.appendChild(textoElement);
+            estado.textosActivos.push(textoElement);
+            
+            // Animación
+            textoElement.animate([
+                { 
+                    opacity: 0,
+                    transform: 'translateY(0) scale(0.5)',
+                    filter: 'blur(10px)'
+                },
+                { 
+                    opacity: 1,
+                    transform: 'translateY(-20px) scale(1.2)',
+                    filter: 'blur(0px)'
+                },
+                { 
+                    opacity: 0,
+                    transform: 'translateY(-100px) scale(0.5)',
+                    filter: 'blur(10px)'
+                }
+            ], {
+                duration: 3000,
+                easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
+            });
+            
+            // Eliminar después
+            setTimeout(() => {
+                if (textoElement.parentNode) {
+                    textoElement.parentNode.removeChild(textoElement);
+                    estado.textosActivos = estado.textosActivos.filter(t => t !== textoElement);
+                }
+            }, 3000);
+        }
+
+        function actualizarTextosCosmicos() {
+            estado.textosActivos.forEach((texto, index) => {
+                const progreso = index / estado.textosActivos.length;
+                texto.style.transform = `translateY(${-20 - progreso * 10}px)`;
+            });
+        }
+
+        function crearExplosionCorazones(elemento) {
+            const rect = elemento.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            const emojis = ['💖', '💗', '💓', '💞', '💕', '💘', '💝', '💟'];
+            
+            for (let i = 0; i < 12; i++) {
+                const particula = document.createElement('div');
+                particula.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                particula.style.position = 'fixed';
+                particula.style.left = x + 'px';
+                particula.style.top = y + 'px';
+                particula.style.fontSize = (Math.random() * 2 + 1.5) + 'rem';
+                particula.style.opacity = '1';
+                particula.style.zIndex = '9998';
+                particula.style.pointerEvents = 'none';
+                particula.style.transform = 'translate(-50%, -50%)';
+                
+                document.body.appendChild(particula);
+                
+                // Animación explosiva
+                const angulo = Math.random() * Math.PI * 2;
+                const distancia = 50 + Math.random() * 100;
+                const duracion = 1000 + Math.random() * 500;
+                
+                particula.animate([
+                    {
+                        transform: 'translate(-50%, -50%) scale(1)',
+                        opacity: 1
+                    },
+                    {
+                        transform: `translate(${Math.cos(angulo) * distancia - 50}px, ${Math.sin(angulo) * distancia - 50}px) scale(0)`,
+                        opacity: 0
+                    }
+                ], {
+                    duration: duracion,
+                    easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
+                });
+                
+                setTimeout(() => {
+                    if (particula.parentNode) {
+                        particula.parentNode.removeChild(particula);
+                    }
+                }, duracion);
+            }
+        }
+
+        function crearExplosionEspecial(x, y) {
+            // Efecto de onda expansiva
+            const onda = document.createElement('div');
+            onda.style.position = 'fixed';
+            onda.style.left = x + 'px';
+            onda.style.top = y + 'px';
+            onda.style.width = '0';
+            onda.style.height = '0';
+            onda.style.borderRadius = '50%';
+            onda.style.border = `2px solid var(--rosa-cosmico)`;
+            onda.style.transform = 'translate(-50%, -50%)';
+            onda.style.zIndex = '9997';
+            onda.style.pointerEvents = 'none';
+            
+            document.body.appendChild(onda);
+            
+            onda.animate([
+                {
+                    width: '0px',
+                    height: '0px',
+                    opacity: 1,
+                    borderWidth: '10px'
+                },
+                {
+                    width: '300px',
+                    height: '300px',
+                    opacity: 0,
+                    borderWidth: '0px'
+                }
+            ], {
+                duration: 1500,
+                easing: 'ease-out'
+            });
+            
+            setTimeout(() => {
+                if (onda.parentNode) {
+                    onda.parentNode.removeChild(onda);
+                }
+            }, 1500);
+        }
+
+        function incrementarContador() {
+            estado.contadorAmor++;
+            const contador = document.getElementById('contadorAmor');
+            contador.textContent = estado.contadorAmor;
+            
+            // Efecto visual
+            contador.animate([
+                { transform: 'scale(1)', color: 'var(--dorado-lunar)' },
+                { transform: 'scale(1.3)', color: 'var(--rosa-cosmico)' },
+                { transform: 'scale(1)', color: 'var(--dorado-lunar)' }
+            ], {
+                duration: 500,
+                easing: 'ease-in-out'
+            });
+            
+            // Cada 10 interacciones, efecto especial
+            if (estado.contadorAmor % 10 === 0) {
+                crearTextoCosmico(
+                    window.innerWidth / 2,
+                    window.innerHeight / 2,
+                    `¡${estado.contadorAmor} latidos de amor!`
+                );
+            }
+        }
+
+        // ========== MODOS ESPECIALES ==========
+        function toggleModoNoche() {
+            estado.modoNoche = !estado.modoNoche;
+            const btn = document.getElementById('btnModoNoche');
+            
+            if (estado.modoNoche) {
+                document.body.style.background = '#000';
+                btn.style.background = 'var(--dorado-lunar)';
+                btn.style.color = '#000';
+                btn.innerHTML = '<i class="fas fa-sun"></i>';
+                
+                // Intensificar estrellas
+                const estrellas = document.querySelectorAll('.estrella-constelacion');
+                estrellas.forEach(estrella => {
+                    estrella.style.opacity = (parseFloat(estrella.style.opacity) * 2).toString();
+                });
+            } else {
+                document.body.style.background = 'linear-gradient(135deg, #0c0c1d 0%, #1a1a40 50%, #270082 100%)';
+                btn.style.background = 'rgba(26, 26, 64, 0.8)';
+                btn.style.color = 'var(--rosa-cosmico)';
+                btn.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        }
+
+        function activarSupernova() {
+            if (estado.supernovaActiva) return;
+            
+            estado.supernovaActiva = true;
+            const supernova = document.getElementById('supernova');
+            
+            // Animación de supernova
+            supernova.animate([
+                { width: '0px', height: '0px', opacity: 1 },
+                { width: '2000px', height: '2000px', opacity: 0 }
+            ], {
+                duration: config.tiempoSupernova,
+                easing: 'ease-out'
+            });
+            
+            // Efecto en todo el universo
+            const universo = document.getElementById('universo3d');
+            universo.style.filter = 'brightness(2)';
+            
+            // Crear múltiples explosiones
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    crearExplosionEspecial(
+                        Math.random() * window.innerWidth,
+                        Math.random() * window.innerHeight
+                    );
+                }, i * 30);
+            }
+            
+            // Resetear después
+            setTimeout(() => {
+                universo.style.filter = 'brightness(1)';
+                estado.supernovaActiva = false;
+                supernova.style.width = '0';
+                supernova.style.height = '0';
+            }, config.tiempoSupernova);
+        }
+
+        function toggleConstelacion() {
+            estado.constelacionActiva = !estado.constelacionActiva;
+            const constelacion = document.getElementById('modoConstelacion');
+            const btn = document.getElementById('btnConstelacion');
+            
+            if (estado.constelacionActiva) {
+                constelacion.style.opacity = '1';
+                btn.style.background = 'var(--cian-nebulosa)';
+                btn.style.color = 'white';
+                
+                // Conectar estrellas con líneas
+                conectarEstrellas();
+            } else {
+                constelacion.style.opacity = '0.3';
+                btn.style.background = 'rgba(26, 26, 64, 0.8)';
+                btn.style.color = 'var(--rosa-cosmico)';
+                
+                // Remover líneas de conexión
+                const lineas = document.querySelectorAll('.linea-constelacion');
+                lineas.forEach(linea => linea.remove());
+            }
+        }
+
+        function conectarEstrellas() {
+            const estrellas = document.querySelectorAll('.estrella-constelacion');
+            const lineasExistentes = document.querySelectorAll('.linea-constelacion');
+            lineasExistentes.forEach(linea => linea.remove());
+            
+            // Conectar estrellas cercanas
+            for (let i = 0; i < estrellas.length; i++) {
+                for (let j = i + 1; j < estrellas.length; j++) {
+                    const estrellaA = estrellas[i];
+                    const estrellaB = estrellas[j];
+                    
+                    const rectA = estrellaA.getBoundingClientRect();
+                    const rectB = estrellaB.getBoundingClientRect();
+                    
+                    const distancia = Math.sqrt(
+                        Math.pow(rectA.left - rectB.left, 2) + 
+                        Math.pow(rectA.top - rectB.top, 2)
+                    );
+                    
+                    if (distancia < 150) {
+                        crearLineaConstelacion(rectA, rectB);
+                    }
+                }
+            }
+        }
+
+        function crearLineaConstelacion(rectA, rectB) {
+            const linea = document.createElement('div');
+            linea.className = 'linea-constelacion';
+            linea.style.position = 'fixed';
+            linea.style.pointerEvents = 'none';
+            linea.style.zIndex = '9996';
+            
+            // Calcular posición y ángulo
+            const x1 = rectA.left + rectA.width / 2;
+            const y1 = rectA.top + rectA.height / 2;
+            const x2 = rectB.left + rectB.width / 2;
+            const y2 = rectB.top + rectB.height / 2;
+            
+            const distancia = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+            const angulo = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+            
+            linea.style.left = x1 + 'px';
+            linea.style.top = y1 + 'px';
+            linea.style.width = distancia + 'px';
+            linea.style.height = '1px';
+            linea.style.background = 'linear-gradient(90deg, transparent, var(--cian-nebulosa), transparent)';
+            linea.style.transform = `rotate(${angulo}deg)`;
+            linea.style.transformOrigin = '0 0';
+            linea.style.opacity = '0.3';
+            
+            document.body.appendChild(linea);
+        }
+
+        // ========== SISTEMA DE MENSAJES ==========
+        function mostrarMensajeSecreto() {
+            estado.mensajeActual = 0;
+            actualizarVentanaMensaje();
+            document.getElementById('ventanaMensaje').classList.add('visible');
+        }
+
+        function siguienteMensaje() {
+            estado.mensajeActual = (estado.mensajeActual + 1) % config.mensajesAmor.length;
+            actualizarVentanaMensaje();
+        }
+
+        function actualizarVentanaMensaje() {
+            const mensaje = config.mensajesAmor[estado.mensajeActual];
+            const ventana = document.getElementById('ventanaMensaje');
+            
+            document.getElementById('tituloMensaje').textContent = mensaje.titulo;
+            document.getElementById('contenidoMensaje').textContent = mensaje.contenido;
+            ventana.style.borderColor = mensaje.color;
+            
+            // Efecto visual
+            ventana.animate([
+                { opacity: 0.8, transform: 'translate(-50%, -50%) scale(0.95)' },
+                { opacity: 1, transform: 'translate(-50%, -50%) scale(1)' }
+            ], {
+                duration: 300,
+                easing: 'ease-out'
+            });
+        }
+
+        function cerrarVentana() {
+            document.getElementById('ventanaMensaje').classList.remove('visible');
+        }
+
+        // ========== EFECTOS EXTRA ==========
+        function activarLluviaEspecial() {
+            const contenedor = document.getElementById('lluviaEstrellas');
+            
+            // Ráfaga intensa de estrellas fugaces
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const estrella = document.createElement('div');
+                    estrella.className = 'estrella-fugaz';
+                    estrella.style.left = Math.random() * 100 + '%';
+                    estrella.style.top = '-30px';
+                    estrella.style.height = '100px';
+                    estrella.style.background = 'linear-gradient(to bottom, transparent, var(--rosa-cosmico))';
+                    
+                    contenedor.appendChild(estrella);
+                    
+                    const duracion = 500 + Math.random() * 1000;
+                    
+                    estrella.animate([
+                        { transform: 'translateY(0)', opacity: 0 },
+                        { transform: `translateY(${window.innerHeight + 100}px)`, opacity: 1 },
+                        { transform: `translateY(${window.innerHeight + 200}px)`, opacity: 0 }
+                    ], {
+                        duration: duracion,
+                        easing: 'linear'
+                    });
+                    
+                    setTimeout(() => {
+                        if (estrella.parentNode) {
+                            estrella.parentNode.removeChild(estrella);
+                        }
+                    }, duracion);
+                }, i * 30);
+            }
+            
+            crearTextoCosmico(
+                window.innerWidth / 2,
+                window.innerHeight / 2,
+                "¡LLUVIA DE ESTRELLAS DE AMOR!"
+            );
+        }
+
+        // ========== ENTRADA ESPECTACULAR ==========
+        function crearEntradaEspectacular() {
+            // Oscurecer todo inicialmente
+            document.body.style.opacity = '0';
+            
+            // Crear pantalla de carga galáctica
+            const pantallaCarga = document.createElement('div');
+            pantallaCarga.style.position = 'fixed';
+            pantallaCarga.style.top = '0';
+            pantallaCarga.style.left = '0';
+            pantallaCarga.style.width = '100%';
+            pantallaCarga.style.height = '100%';
+            pantallaCarga.style.background = '#000';
+            pantallaCarga.style.zIndex = '100000';
+            pantallaCarga.style.display = 'flex';
+            pantallaCarga.style.alignItems = 'center';
+            pantallaCarga.style.justifyContent = 'center';
+            pantallaCarga.style.flexDirection = 'column';
+            pantallaCarga.style.gap = '40px';
+            
+            pantallaCarga.innerHTML = `
+                <div style="font-size: 5rem; animation: latido-solar 2s infinite;">🌌</div>
+                <div style="font-family: 'Dancing Script', cursive; font-size: 3rem; color: var(--rosa-cosmico); text-align: center;">
+                    Inicializando universo de amor...
+                </div>
+                <div style="width: 300px; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; overflow: hidden;">
+                    <div id="barraCargaUniversal" style="height: 100%; background: linear-gradient(90deg, var(--rosa-cosmico), var(--violeta-estelar)); width: 0%; transition: width 0.5s ease;"></div>
+                </div>
+                <div style="color: var(--rosa-suave); font-size: 1.1rem; margin-top: 20px;">
+                    Creando constelaciones de amor...
+                </div>
+            `;
+            
+            document.body.appendChild(pantallaCarga);
+            
+            // Animación de carga
+            let progreso = 0;
+            const intervalo = setInterval(() => {
+                progreso += Math.random() * 15;
+                if (progreso > 100) progreso = 100;
+                
+                document.getElementById('barraCargaUniversal').style.width = progreso + '%';
+                
+                // Cambiar texto según progreso
+                const textos = [
+                    "Creando constelaciones de amor...",
+                    "Generando planetas de pasión...",
+                    "Inflamando el corazón solar...",
+                    "Preparando sorpresas cósmicas...",
+                    "¡Universo de amor listo!"
+                ];
+                const textoIndex = Math.floor(progreso / 20);
+                if (textoIndex < textos.length) {
+                    pantallaCarga.querySelector('div:nth-child(4)').textContent = textos[textoIndex];
+                }
+                
+                if (progreso === 100) {
+                    clearInterval(intervalo);
+                    
+                    // Animación de salida
+                    pantallaCarga.animate([
+                        { opacity: 1, transform: 'scale(1)' },
+                        { opacity: 0, transform: 'scale(1.5)' }
+                    ], {
+                        duration: 1000,
+                        easing: 'ease-in-out',
+                        fill: 'forwards'
+                    });
+                    
+                    setTimeout(() => {
+                        document.body.removeChild(pantallaCarga);
+                        document.body.style.opacity = '1';
+                        
+                        // Efecto de revelación
+                        document.body.animate([
+                            { opacity: 0 },
+                            { opacity: 1 }
+                        ], {
+                            duration: 2000,
+                            easing: 'ease-in'
+                        });
+                        
+                        // Explosión inicial de bienvenida
+                        setTimeout(() => {
+                            crearTextoCosmico(
+                                window.innerWidth / 2,
+                                window.innerHeight / 2,
+                                "BIENVENIDO/A A NUESTRO UNIVERSO 💖"
+                            );
+                            
+                            // Ráfaga inicial de estrellas
+                            for (let i = 0; i < 20; i++) {
+                                setTimeout(() => {
+                                    crearExplosionEspecial(
+                                        Math.random() * window.innerWidth,
+                                        Math.random() * window.innerHeight
+                                    );
+                                }, i * 50);
+                            }
+                        }, 500);
+                    }, 1000);
+                }
+            }, 100);
+        }
+
+        // ========== AJUSTES RESPONSIVE ==========
+        function ajustarParaResponsive() {
+            const esMovil = window.innerWidth <= 768;
+            
+            if (esMovil) {
+                // Reducir número de partículas para mejor rendimiento
+                const particulas = document.querySelectorAll('.particula');
+                if (particulas.length > 20) {
+                    for (let i = 20; i < particulas.length; i++) {
+                        particulas[i].style.display = 'none';
+                    }
+                }
+                
+                // Ajustar tamaños de planetas
+                config.planetas.forEach(planeta => {
+                    planeta.tamaño = 40;
+                    const elemento = document.getElementById(planeta.id);
+                    if (elemento) {
+                        elemento.style.width = '40px';
+                        elemento.style.height = '40px';
+                        elemento.style.fontSize = '1.5rem';
+                    }
+                });
+            }
+        }
+
+        window.addEventListener('resize', ajustarParaResponsive);
+        ajustarParaResponsive();
+    </script>
+</body>
+</html>
